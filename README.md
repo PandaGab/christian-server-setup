@@ -2,7 +2,7 @@
 
 A simple document to ease the use of compute server.
 
-*Note*: You can always look at the usage of all the commands I will be using with `man <command>` or `command --help`
+*Note*: You can always look at the usage of all the commands I will be using with `man <command>` or `<command> --help`
 
 ## How to loggin
 
@@ -142,7 +142,7 @@ You can list all running container with `docker container ls`. If you add the fl
 
 `NV_GPU=0 nvidia-docker run --rm -it -v "/path/to/dir:/mnt/dir" --user $(id -u) --shm-size=10g --name container-name image-name`
 
-* __NV_GPU__ isolate the container so a specific GPU.
+* __NV_GPU__ isolate the container to a specific GPU.
 
 * __--rm__ Remove the container when it is close. I always use this flag when I run a container.
 
@@ -150,7 +150,7 @@ You can list all running container with `docker container ls`. If you add the fl
 
 * __-v__ This is very nice, it allows you to mount one of your folder in the container. You can use this option multiple times.
 
-* __--user__ Without this, the container start and put you as root. This is not actually very clever if your container will write file on your computer (like results of a training). I always start container with `--user $(id -u)` which will give me the same permissions as on the remote machine.
+* __--user__ Without this, the container start and gives you root permission. This is not actually very clever if your container write file on your computer, you won't be able to modify them. I always start container with `--user $(id -u)` which will give me the same permissions as on the remote machine.
 
 * __--shm-size__ If you have memory error while training, try allowing more memory to the container with this option.
 
@@ -165,7 +165,7 @@ You can attach to a container with `docker attach container-name`
 You can kill container with `docker kill container-name`
 
 #### Useful aliases/functions
-Starting container can rapidly get cubersome. Here is two I am using.
+Starting container can rapidly get cubersome. Here is two shortcuts I am using.
 
 `alias doc='nvidia-docker run -it --rm --user $(id -u) --shm-size=10g -v /home-local/galec39.nobkp/path/to/code/:/workspace/code/ -v /home-local2/galec39/path/to/data/:/workspace/data -v /home-local2/galec39/path/to/results:/workspace/results/ -w /workspace/code/'`
 
@@ -173,7 +173,7 @@ With this alias, i can juste do `NV_GPU=0 doc --name container-name image-name` 
 
 The dockerfile above is the one I am using for tensorboard only. To run it, I made a function in my `~/.bashrc` file:
 
-```python
+```shell
 function db {
 port=6006
 volume='.'
@@ -195,7 +195,7 @@ docker run --rm -d --user $(id -u) -p $port:6006 -v $(readlink -f $volume):/tens
 ```
 (Dont forget to `source ~/.bashrc` after each modifications of your `.bashrc` file.)
 
-This function use the image `tensorboard-gab` already build on __bersimis__ and __mitis__, start the container, start tensorboard and detach from it.
+This function use the image `tensorboard-gab` already build on __bersimis__ and __mitis__. What it does is start the container, start tensorboard and detach from it.
 
 So now, suppose that you have _tensorboard_ events in the folder `/path/to/events/`
 
