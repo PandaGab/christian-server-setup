@@ -203,9 +203,22 @@ You can just do `db -p 6006 -v /path/to/events -n container-name`
 
 Simple as that! To close this  container, you have two options: kill it, or attach to it and close it.
 
+## How to easily code on a remote server in a container from my laptop
 
+Here is how I can easily code in a docker on a remote machine. To do this, I use `sshfs`.
 
+First of, I recommend you create the directory `~/mnt/` which will be use to mount on different remote machine. For each remote machine you want to work on, make a directory of that remote machine in `~/mnt/`. For instance, I can work on __orleans__, __bersimis__ and __mitits__. So I have directories `~/mnt/orleans/`, `~/mnt/bersimis/` and `~/mnt/mitis/`. Then, i put all my code on the remote machine (with git) and I mount the directory (eg `/gel/usr/galec39/path/to/code/`) to the folder in `~/mnt/` corresponding to the remote machine I want to code.
 
+`sshfs -p 22 -o uid=$UID <idul>@bersimis.gel.ulaval.ca:path/to/code/ $HOME/mnt/bersimis -o auto_cache,reconnect,default_permissions`
+
+You should then find your code in `~/mnt/bersimis/code`. Every modifications on your laptop will be sent on the remote machine.
+
+Now, you can create a container and mount the folder `/gel/usr/galec39/path/to/code/` in the container (with the `-v` flag).
+
+So your container, on the remote machine, will contains the code you are modifying on your laptop. You can now use the interactive terminal in the container to execute your code (eg. `python train.py`)
+
+When you are done, you have to _unmount_ `~/mnt/bersimis` by doing:
+`fusermount -u ~/mnt/bersimis` on your laptop.
 
 
 
