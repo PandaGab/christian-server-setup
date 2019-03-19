@@ -1,11 +1,11 @@
 # christian-server-setup
 
-- [Login to a server](login)
-- [Setup a server](setup)
-- [Using tmux](tmux)
-- [Using git](git)
-- [Using docker](docker)
-- [Coding remotly](remote-code)
+- [Login to a server](#login)
+- [Setup a server](#setup)
+- [Using tmux](#tmux)
+- [Using git](#git)
+- [Using docker](#docker)
+- [Coding remotly](#remote-code)
 
 
 A simple document to ease the use of Christian's group computing servers.
