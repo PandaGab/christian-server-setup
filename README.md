@@ -108,8 +108,7 @@ I will not go into details on what docker is, instead I will just write out my v
 
 Here are more specific explanations for each point.
 
-**dockerfile**:
-Since it is quite hard to know every libraries needed for a os to run, you will most likely start your _dockerfile_ with the _FROM_ command. This allow you to build _dockerfile_ on top of the other. Here is an example of a _dockerfile_ used for _tensorboard_.
+**dockerfile**: Since it is quite hard to know every libraries needed for a os to run, you will most likely start your _dockerfile_ with the _FROM_ command. This allow you to build _dockerfile_ on top of the other. Here is an example of a _dockerfile_ used for _tensorboard_.
 
 ```python
 FROM tensorflow/tensorflow
@@ -128,8 +127,7 @@ ENTRYPOINT ["tensorboard", "--logdir=/tensorboard/"]
 
 All my _dockerfile_ are in the same directory on __bersimis__ and __mitis__, for say `/path/to/dockerfiles/tensorboard.docker`
 
-##### image
-In order to have an image, you have to build it with
+**image**: In order to have an image, you have to build it with
 
 `docker build -f tensorboard.docker --name tensorboard-gab .`
 
@@ -137,8 +135,7 @@ Run this command while being in the folder `/path/to/dockerfiles/`, the `.` is i
 
 You can list all docker images with `docker images`
 
-##### container
-Once the image is build, you can use the command `docker run image-name` to run it. If you want your image to easily have acces to GPU ressources (which is nice when training networks), you should use `nvidia-docker docker run image-name`
+**container**: Once the image is build, you can use the command `docker run image-name` to run it. If you want your image to easily have acces to GPU ressources (which is nice when training networks), you should use `nvidia-docker docker run image-name`
 
 You can list all running container with `docker container ls`. If you add the flag `-a` you can see containers that are not running.
 
@@ -165,9 +162,22 @@ You can list all running container with `docker container ls`. If you add the fl
 
 * __-d__ Giving this flag will start the container and _detach_ from it right after.
 
-You can attach to a container with `docker attach container-name`
+**Detaching and attaching from/to a container**: You can detach from inside a running container with the combination `ctrl + p, ctrl + q`. You can than reattach to it with `attach`. Here is an example: 
 
-You can kill container with `docker kill container-name`
+`docker attach container-name`
+
+
+**Listing the running container**: It is very useful to see what are you currently running with `ps`. Here is an example:
+
+`docker ps -q --filter "name=pattern"`
+
+- `-q` → quiet, affiche seulement l'id des containers
+- `--filter`  → filtre la requête
+    - `"name=pattern"` → filtre en fonction des noms des containers
+
+**Killing a container**: It is also interesting to kill containers with `kill`, though pay attention with that, you have the permission to kill others' containers. Here is an example of powerful command nesting in shell to kill a list of container from a name pattern:
+
+`docker kill $(docker ps -q --filter "name=pattern")`
 
 #### Useful aliases/functions
 Starting container can rapidly get cubersome. Here is two shortcuts I am using.
