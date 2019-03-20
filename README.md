@@ -1,75 +1,80 @@
 # christian-server-setup
 
-A simple document to ease the use of compute server.
+- [Login to a server](#login)
+- [Setup a server](#setup)
+- [Using tmux](#tmux)
+- [Using git](#git)
+- [Using docker](#docker)
+- [Coding remotly](#remote-code)
+
+
+A simple document to ease the use of Christian's group computing servers.
 
 *Note*: You can always look at the usage of all the commands I will be using with `man <command>` or `<command> --help`
 
-## How to loggin
+## <a name="login"></a> How to login to a server
 
 You first need to have an account on the server. Your username on all servers is your `<idul>`.
 
-You can first loggin into a remote machine with `ssh` which will provide secure encrypted communications between two hosts. Here is the command:
+You can first login into a remote machine with `ssh` which will provide secure encrypted communication between two hosts. Here is the command:
 
-`ssh <idul>@servername.gel.ulaval.ca`
+`ssh <idul>@<servername>.gel.ulaval.ca`
 
-You will be asked to enter your password, it's the same you always use with your `<idul>`. So far, we have two compute servers, so `servername` must be replace with either: **bersimis** or **mitis**.
+You will be asked to enter your password, it's the same you always use with your `<idul>`. So far, we have two compute servers, so `<servername>` must be replace with either: **bersimis** or **mitis**.
 
-## Copy your shell configurations
+## <a name="setup"></a> How to setup the server
 
-You then entered into the remote machine. It is pretty dark and white in there... One easy thing to do is transfer your shell configurations into the remote machine. To do so, you can use secure copy command: `scp` which work almost as `cp`.
+### Using scp to copy anything on the remote machine
 
-Personnally, I have my configurations/aliases/functions in my `~/.bashrc` file. So I will copy this file.
-
-`scp ~/.bashrc <idul>@servername.gel.ulaval.ca:/gel/usr/<idul>/.bashrc`
-
-if you ssh with a command (`ssh -c`), it will create a non-interactive shell, which won't load `~/.bashrc`, instead, non-interactive shell will load `~/.profile`. To overcome this and make sure you always get your shell configurations, you can run the following on the remote machine.
-
-`echo "source ~/.bashrc" >> ~/.profile`
-
-Some things to point out here about the server: your `$HOME` directory will always be `/gel/usr/<idul>` and `/home-local/<idul>` (both link point to the same place). There is extra storage available at `/home-local2/<idul>.extra.nobkp/` to put all your data and/or results.
-
-## scp
-
-The basic usage of `scp` is
+Basic usage of `scp` is
 
 `scp <SOURCE> <DESTINATION>`
 
-
 If you want to copy an entire directory, you need to add the `-r` flag like `scp -r <SOURCE> <DESTINATION>`.
 
-Here are some concrete example of `scp`.
+Here are some concrete example of `scp`:
 
-##### Copy all files with specific extension in a folder from my computer into the remote machine
-`scp /path/to/folder/*.txt <idul>@servername.gel.ulaval.ca:/path/to/folder/`
+- **Copy all files with a specific extension in a folder from my computer to the remote machine**: `scp /path/to/folder/*.txt <idul>@servername.gel.ulaval.ca:/path/to/folder/`
 
-##### Copy directory and all sub-directories from remote machine into my computer
-`scp -r <idul>@servername.gel.ulaval.ca:/path/to/folder /path/to/foler`
+- **Copy directory and all sub-directories from remote machine to my computer**: `scp -r <idul>@servername.gel.ulaval.ca:/path/to/folder /path/to/foler`
 
-##### Copy files between two hosts machine (eg. from __bersimis__ to __mitis__)
+- **Copy files between two hosts machine (eg. from __bersimis__ to __mitis__)**: The easiest way to do that is ssh in one of the host and then use scp from there.
 
-The easiest way to do that is ssh in one of the host and then use scp from there.
+**Notes:** If you encounter _user unknown_ error while trying to scp between twos hosts, you first need to add the remote host to the known user list (thoses known hosts can be seen in `~/.ssh/known_hosts`). It will be automatically done by trying to `ssh` from within one host to the other. For exemple, start by ssh into __bersimis__, then, from __bersimis__, ssh into __mitis__.
 
-If you encounter _user unknown_ error while trying to scp between twos hosts, you first need to add the remote host to the known user list (thoses known hosts can be seen in `~/.ssh/known_hosts`). It will be automatically done by trying to `ssh` from within one host to the other. For exemple, start by ssh into __bersimis__, then, from __bersimis__, ssh into __mitis__.
+### Copy your shell configuration
 
-## tmux
+If your are connected to the remote machine and you freak out because it is pretty dark and white in there, do not worry... If you already have a nice bloated shell configuration on your pc, an easy thing to do is transfer it to the remote machine. To do so, you can use secure copy command: `scp` which work almost as `cp`.
+
+Personnally, I have my configurations/aliases/functions in my `~/.bashrc` file. So I will copy this file.
+
+`scp ~/.bashrc <idul>@<servername>.gel.ulaval.ca:/gel/usr/<idul>/.bashrc`
+
+If you ssh with a command (`ssh -c`), it will create a non-interactive shell, which won't load `~/.bashrc` but the non-interactive shell `~/.profile` instead. To overcome this and make sure you always get the same shell configurations, you can run the following on the remote machine.
+
+`echo "source ~/.bashrc" >> ~/.profile`
+
+Some things to point out here about the server: your `$HOME` directory will always be `/gel/usr/<idul>` and `/home-local/<idul>` (both link to the same place). There is extra storage available at `/home-local2/<idul>.extra.nobkp/` and putting your large data and results files there is greatly encourage.
+
+## <a name="tmux"></a> Using tmux, the path to an efficient journey
 
 [tmux shortcuts&cheatsheet](https://gist.github.com/MohamedAlaa/2961058)
 
-Suppose you want multiple terminals on the host machine, you would need to ssh multiple time. This is not ideal. Further more, if you ssh in, start a training (eg. `python train.py`), then lose internet and then disconnect your ssh, it will kill your terminal on the remote machine and therefore stop your training.
+Suppose you want multiple terminals on the remote machine, you would need to ssh multiple times. This is not ideal. Furthermore, if you ssh in, start a training (eg. `python train.py`) and then lose your internet, it will surely disconnect your ssh, killing your terminal on the remote machine and stopping your training. This you sure do not want ever to happen.
 
 One way to evercome that is to use a terminal multiplexer, eg. `tmux`.
 
 `tmux`is great :D. You can install it on your machine with `sudo apt-get install tmux`. It is already installed on __bersimis__ and __mitis__.
 
-So basically, `tmux` allows you to have multiple terminals in one terminal. To start a tmux session, you can juste type `tmux` in the terminal. But it is preferable to give a name to the session, therefore, you can do the following:
+So basically, `tmux` allows you to have multiple terminals in one terminal. To start a tmux session, you can just type `tmux` in the terminal. But it is preferable to give it a name, therefore, you can do the following:
 
-`tmux new -s session-name`
+`tmux new -s <session-name>`
 
 Once you are in your brand new tmux session, you can split vertically or horizontally your terminal into two terminals with `ctrl-b`+`"` and `ctrl-b`+`%`.
 
 If you want a new full size terminal into your tmux session, you can do `ctrl-b`+`c` and use `ctrl-b`+`n` to navigate between them.
 
-To close subterminal, you can do `ctrl-d`
+To close subterminal, you can do `ctrl-d` or `ctrl-x` to kill it.
 
 One very nice tool is the option to _detach_ from a tmux session with `ctrl-b`+`d`. Doing so, you will exit you tmux session, but everything in it will keep running as if you were still connected to it.
 
@@ -77,34 +82,33 @@ You can _attach_ back into your tmux session with `tmux a -t session-name`
 
 You can also list all your current tmux sessions with `tmux ls`.
 
-You can do `ctrl-d` to exit a tmux session (this tmux session will no longer be available)
+You can do `ctrl-d` to exit a tmux session (this tmux session will no longer be available).
 
-## git/github
+## <a name="git"></a> Using git/github
 
-git is already installed on __bersimis__ and __mitis__. To setup your account correctly, you just need to add your username and email of your github account.
+git is already installed on __bersimis__ and __mitis__. To setup your account correctly, you just need to add the username and email of your github account.
 
 `git config --global user.name <USERNAME>`
 
 `git config --global user.email <EMAIL>`
 
-## docker & nvidia-docker
+## <a name="docker"></a> Using docker & nvidia-docker
 
 On __bersimis__ and __mitis__, it is expected to run everything in a docker container.
 
 I will not go into details on what docker is, instead I will just write out my view of it. There is 4 things:
 
-* __docker__: This is just the name of all that thing, nothing more.
+* __docker__: This is just the name of the thing, nothing more.
 
 * __dockerfile__: This is a file describing every aspect of a computer on the software level. With this file you know exactly the state of a machine (the environment).
 
 * __image__: An image is the actual computer (or instance) describe in a dockerfile. It is not a description of the computer, it is actually containing every library needed to run it.
 
-* __container__: You might have an image build, but it is doing nothing for the moment, you need _start_ the computer (the image) and give it a specific command to execute. Doing so, you have a container. An image running a command is a container.
+* __container__: You might have an image build, but it is doing nothing for the moment, you need to _start_ (or _run_) the computer (the image) and give it a specific command to execute. Doing so, you have a container. An image running a command is a container.
 
 Here are more specific explanations for each point.
 
-##### dockerfile
-Since it is quite hard to know every libraries needed for a os to run, you will most likely start your _dockerfile_ with the _FROM_ command. This allow you to build _dockerfile_ on top of the other. Here is an example of a _dockerfile_ used for _tensorboard_.
+**dockerfile**: Since it is quite hard to know every libraries needed for a os to run, you will most likely start your _dockerfile_ with the _FROM_ command. This allow you to build _dockerfile_ on top of the other. Here is an example of a _dockerfile_ used for _tensorboard_.
 
 ```python
 FROM tensorflow/tensorflow
@@ -123,8 +127,7 @@ ENTRYPOINT ["tensorboard", "--logdir=/tensorboard/"]
 
 All my _dockerfile_ are in the same directory on __bersimis__ and __mitis__, for say `/path/to/dockerfiles/tensorboard.docker`
 
-##### image
-In order to have an image, you have to build it with
+**image**: In order to have an image, you have to build it with
 
 `docker build -f tensorboard.docker --name tensorboard-gab .`
 
@@ -132,8 +135,7 @@ Run this command while being in the folder `/path/to/dockerfiles/`, the `.` is i
 
 You can list all docker images with `docker images`
 
-##### container
-Once the image is build, you can use the command `docker run image-name` to run it. If you want your image to easily have acces to GPU ressources (which is nice when training networks), you should use `nvidia-docker docker run image-name`
+**container**: Once the image is build, you can use the command `docker run image-name` to run it. If you want your image to easily have acces to GPU ressources (which is nice when training networks), you should use `nvidia-docker docker run image-name`
 
 You can list all running container with `docker container ls`. If you add the flag `-a` you can see containers that are not running.
 
@@ -160,9 +162,22 @@ You can list all running container with `docker container ls`. If you add the fl
 
 * __-d__ Giving this flag will start the container and _detach_ from it right after.
 
-You can attach to a container with `docker attach container-name`
+**Detaching and attaching from/to a container**: You can detach from inside a running container with the combination `ctrl + p, ctrl + q`. You can than reattach to it with `attach`. Here is an example: 
 
-You can kill container with `docker kill container-name`
+`docker attach container-name`
+
+
+**Listing the running container**: It is very useful to see what are you currently running with `ps`. Here is an example:
+
+`docker ps -q --filter "name=pattern"`
+
+- `-q` → quiet, affiche seulement l'id des containers
+- `--filter`  → filtre la requête
+    - `"name=pattern"` → filtre en fonction des noms des containers
+
+**Killing a container**: It is also interesting to kill containers with `kill`, though pay attention with that, you have the permission to kill others' containers. Here is an example of powerful command nesting in shell to kill a list of container from a name pattern:
+
+`docker kill $(docker ps -q --filter "name=pattern")`
 
 #### Useful aliases/functions
 Starting container can rapidly get cubersome. Here is two shortcuts I am using.
@@ -203,11 +218,11 @@ You can just do `db -p 6006 -v /path/to/events -n container-name`
 
 Simple as that! To close this  container, you have two options: kill it, or attach to it and close it.
 
-## How to easily code on a remote server in a container from my laptop
+## <a name="remote-code"></a> How to code remotly from my laptop
 
 Here is how I can easily code in a docker on a remote machine. To do this, I use `sshfs`.
 
-First of, I recommend you create the directory `~/mnt/` which will be use to mount on different remote machine. For each remote machine you want to work on, make a directory of that remote machine in `~/mnt/`. For instance, I can work on __orleans__, __bersimis__ and __mitits__. So I have directories `~/mnt/orleans/`, `~/mnt/bersimis/` and `~/mnt/mitis/`. Then, i put all my code on the remote machine (with git) and I mount the directory (eg `/gel/usr/galec39/path/to/code/`) to the folder in `~/mnt/` corresponding to the remote machine I want to code.
+First of, I recommend you to create the directory `~/mnt/` which will be use to mount on different remote machine. For each remote machine you want to work on, make a directory of that remote machine in `~/mnt/`. For instance, I can work on __orleans__, __bersimis__ and __mitits__. So I have directories `~/mnt/orleans/`, `~/mnt/bersimis/` and `~/mnt/mitis/`. Then, i put all my code on the remote machine (with git) and I mount the directory (eg `/gel/usr/galec39/path/to/code/`) to the folder in `~/mnt/` corresponding to the remote machine I want to code.
 
 `sshfs -p 22 -o uid=$UID <idul>@bersimis.gel.ulaval.ca:path/to/code/ $HOME/mnt/bersimis -o auto_cache,reconnect,default_permissions`
 
