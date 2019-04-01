@@ -16,6 +16,8 @@ A simple document to ease the use of Christian's group computing servers.
 
 You first need to have an account on the server. Your username on all servers is your `<idul>`.
 
+If you are not on the university network (_eduroam_), you can follow [this link](https://www.dti.ulaval.ca/connexion-au-reseau-de-lul/reseau-distance) and install the require software (under _Guides_ section) depending on your OS.
+
 You can first login into a remote machine with `ssh` which will provide secure encrypted communication between two hosts. Here is the command:
 
 `ssh <idul>@<servername>.gel.ulaval.ca`
