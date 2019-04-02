@@ -5,14 +5,14 @@
 - [Using tmux](#tmux)
 - [Using git](#git)
 - [Using docker](#docker)
-- [Coding remotly](#remote-code)
+- [Coding remotely](#remote-code)
 
 
 A simple document to ease the use of Christian's group computing servers.
 
 *Note*: You can always look at the usage of all the commands I will be using with `man <command>` or `<command> --help`
 
-## <a name="login"></a> How to login to a server
+## <a name="login"></a> >> How to login to a server
 
 You first need to have an account on the server. Your username on all servers is your `<idul>`.
 
@@ -24,7 +24,7 @@ You can first login into a remote machine with `ssh` which will provide secure e
 
 You will be asked to enter your password, it's the same you always use with your `<idul>`. So far, we have two compute servers, so `<servername>` must be replace with either: **bersimis** or **mitis**.
 
-## <a name="setup"></a> How to setup the server
+## <a name="setup"></a> >> How to setup the server
 
 ### Using scp to copy anything on the remote machine
 
@@ -58,7 +58,7 @@ If you ssh with a command (`ssh -c`), it will create a non-interactive shell, wh
 
 Some things to point out here about the server: your `$HOME` directory will always be `/gel/usr/<idul>` and `/home-local/<idul>` (both link to the same place). There is extra storage available at `/home-local2/<idul>.extra.nobkp/` and putting your large data and results files there is greatly encourage.
 
-## <a name="tmux"></a> Using tmux, the path to an efficient journey
+## <a name="tmux"></a> >> How to use tmux, the path to an efficient journey
 
 [tmux shortcuts&cheatsheet](https://gist.github.com/MohamedAlaa/2961058)
 
@@ -86,7 +86,7 @@ You can also list all your current tmux sessions with `tmux ls`.
 
 You can do `ctrl-d` to exit a tmux session (this tmux session will no longer be available).
 
-## <a name="git"></a> Using git/github
+## <a name="git"></a> >> How to use git/github
 
 git is already installed on __bersimis__ and __mitis__. To setup your account correctly, you just need to add the username and email of your github account.
 
@@ -94,7 +94,7 @@ git is already installed on __bersimis__ and __mitis__. To setup your account co
 
 `git config --global user.email <EMAIL>`
 
-## <a name="docker"></a> Using docker & nvidia-docker
+## <a name="docker"></a> >> How to use docker & nvidia-docker
 
 On __bersimis__ and __mitis__, it is expected to run everything in a docker container.
 
@@ -164,7 +164,7 @@ You can list all running container with `docker container ls`. If you add the fl
 
 * __-d__ Giving this flag will start the container and _detach_ from it right after.
 
-**Detaching and attaching from/to a container**: You can detach from inside a running container with the combination `ctrl + p, ctrl + q`. You can than reattach to it with `attach`. Here is an example: 
+**Detaching and attaching from/to a container**: You can detach from inside a running container with the combination `ctrl + p, ctrl + q`. You can than reattach to it with `attach`. Here is an example:
 
 `docker attach container-name`
 
@@ -220,11 +220,11 @@ You can just do `db -p 6006 -v /path/to/events -n container-name`
 
 Simple as that! To close this  container, you have two options: kill it, or attach to it and close it.
 
-## <a name="remote-code"></a> How to code remotly from my laptop
+## <a name="remote-code"></a> >> How to code remotely from any laptop
 
 Here is how I can easily code in a docker on a remote machine. To do this, I use `sshfs`.
 
-First of, I recommend you to create the directory `~/mnt/` which will be use to mount on different remote machine. For each remote machine you want to work on, make a directory of that remote machine in `~/mnt/`. For instance, I can work on __orleans__, __bersimis__ and __mitits__. So I have directories `~/mnt/orleans/`, `~/mnt/bersimis/` and `~/mnt/mitis/`. Then, i put all my code on the remote machine (with git) and I mount the directory (eg `/gel/usr/galec39/path/to/code/`) to the folder in `~/mnt/` corresponding to the remote machine I want to code.
+First of, I recommend you to create the directory `~/mnt/` which will be use to mount on different remote machine. For each remote machine you want to work on, make a directory of that remote machine in `~/mnt/`. For instance, I can work on __orleans__, __bersimis__ and __mitis__. So I have directories `~/mnt/orleans/`, `~/mnt/bersimis/` and `~/mnt/mitis/`. Then, i put all my code on the remote machine (with git) and I mount the directory (eg `/gel/usr/galec39/path/to/code/`) to the folder in `~/mnt/` corresponding to the remote machine I want to code.
 
 `sshfs -p 22 -o uid=$UID <idul>@bersimis.gel.ulaval.ca:path/to/code/ $HOME/mnt/bersimis -o auto_cache,reconnect,default_permissions`
 
