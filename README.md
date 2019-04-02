@@ -1,11 +1,11 @@
 # christian-server-setup
 
-- [Login to a server](#login)
-- [Setup a server](#setup)
-- [Using tmux](#tmux)
-- [Using git](#git)
-- [Using docker](#docker)
-- [Coding remotely](#remote-code)
+- [How to login to a server](#login)
+- [How to setup the server](#setup)
+- [How to use tmux](#tmux)
+- [How to use git](#git)
+- [How to use docker & nvidia-docker](#docker)
+- [How to code remotely from any laptop](#remote-code)
 
 
 A simple document to ease the use of Christian's group computing servers.
