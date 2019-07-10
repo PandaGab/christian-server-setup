@@ -131,7 +131,7 @@ All my _dockerfile_ are in the same directory on __bersimis__ and __mitis__, for
 
 **image**: In order to have an image, you have to build it with
 
-`docker build -f tensorboard.docker --name tensorboard-gab .`
+`docker build -f tensorboard.docker -t tensorboard-gab .`
 
 Run this command while being in the folder `/path/to/dockerfiles/`, the `.` is important at the end of the command.
 
