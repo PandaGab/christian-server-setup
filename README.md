@@ -137,7 +137,7 @@ Run this command while being in the folder `/path/to/dockerfiles/`, the `.` is i
 
 You can list all docker images with `docker images`
 
-**container**: Once the image is build, you can use the command `docker run image-name` to run it. If you want your image to easily have acces to GPU ressources (which is nice when training networks), you should use `nvidia-docker docker run image-name`
+**container**: Once the image is build, you can use the command `docker run image-name` to run it. If you want your image to easily have acces to GPU ressources (which is nice when training networks), you should use `nvidia-docker run image-name`
 
 You can list all running container with `docker container ls`. If you add the flag `-a` you can see containers that are not running.
 
