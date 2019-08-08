@@ -6,6 +6,7 @@
 - [How to use git](#git)
 - [How to use docker & nvidia-docker](#docker)
 - [How to code remotely from any laptop](#remote-code)
+- [Advanced settings with ssh and git](#advanced-ssh-git)
 
 
 A simple document to ease the use of Christian's group computing servers.
@@ -237,12 +238,69 @@ So your container, on the remote machine, will contains the code you are modifyi
 When you are done, you have to _unmount_ `~/mnt/bersimis` by doing:
 `fusermount -u ~/mnt/bersimis` on your laptop.
 
+## <a name="advanced-ssh-git"></a>>> Advanced settings with ssh and git
 
+The purpose of this section is fourfold:
 
+- Remove the need to always type your ssh credentials
+- Get rid of the vpn
+- Remove the need to always type your github credentials
+- Simplify your ssh commands
 
+### <a name="ssh-keygen"></a>Generate your ssh key
 
+First thing first, you have to create yourself a private/public key pair. There is different type of encryption, i recommend (from [here](https://security.stackexchange.com/questions/143442/what-are-ssh-keygen-best-practices)) generating your key with the following command
 
+`ssh-keygen -t ed25519 -a 100`
 
+This will create a public create a public key in `~/.ssh/id_e25519.pub` and a private key in `~/.ssh/id_e25519`. You will be asked to enter a passphrase for using your key, you can leave it blank, but it is strongly discouraged. 
 
+Now that you have your key pair, you can copy your public key on whatever computer you want to connect with this command
 
+`ssh-copy-id <idul>@<servername>.gel.ulaval.ca` 
+
+### ssh setup
+
+Under your `~/.ssh` folder you should have a file named `config`. If you don't, just create one. With this file, you can specify different arguments to your `ssh` according to the host you are trying to reach. Here is a sample of my config file
+
+```bash
+Host pika
+  HostName pika.gel.ulaval.ca
+
+Host orleans
+  HostName orleans.gel.ulaval.ca
+  ForwardAgent yes
+  User galec39
+  ServerAliveInterval 120
+  IdentityFile ~/.ssh/id_ed25519
+  ProxyCommand ssh galec39@pika -W %h:%p
+```
+
+There are multiple things going on here, let's go over them.
+
+- __Host__: Specifies the host you want to add commands (eg. `ssh pika`). You can do custom things here, for instance `Host *.gel.ulaval.ca` will be read if you want to reach `pika.gel.ulaval.ca` `mitis.gel.ulaval.ca`.
+- __HostName__: Specifies the real host name you want to reach
+- __ForwardAgent__: It is use for forward your ssh agent to the host. It will be useful when we want to use git without entering our credentials
+- __User__: Specifies the user
+- __ServerAliveInterval__: This ensure that the ssh tunnel will stay open even without being active
+- __IdentityFile__: Specifies your private key to use
+- __ProxyCommand__: This will redirect the ssh connection through a proxy (eg. through pika)
+
+_[This site](https://linux.die.net/man/5/ssh_config) contains much more details about ssh_config._
+
+With this setup, instead of doing
+
+`ssh <idul>@<servername>.gel.ulaval.ca`, one can simply do `ssh <servername>`without having to use the _vpn_. This will be applied for utilities based on ssh (rsync, sshfs, scp, ...)
+
+### Github setup
+
+In order to remove the need to type your password each time you use github, you first need to give them your public key (the one generated [here](#ssh-keygen)). 
+
+The easiest way to do just that is to follow [this](https://help.github.com/en/enterprise/2.15/user/articles/adding-a-new-ssh-key-to-your-github-account) github help page. 
+
+Once you are done, you can check that everything is working with `ssh -T git@github.com` and see
+
+_Hi <username>! You've successfully authenticated, but GitHub does not provide shell access._ 
+
+**Now, when you clone a repo, you have to clone with ssh (instead of http)
 
